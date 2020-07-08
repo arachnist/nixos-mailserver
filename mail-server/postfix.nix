@@ -296,6 +296,7 @@ in
         # Allowing AUTH on a non encrypted connection poses a security risk
         smtpd_tls_auth_only = true;
         # Log only a summary message on TLS handshake completion
+        smtp_tls_loglevel = "1";
         smtpd_tls_loglevel = "1";
 
         # Configure a non blocking source of randomness
