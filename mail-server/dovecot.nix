@@ -123,12 +123,24 @@ let
     EOF
 
     cat <<EOF > ${userdbFile}
-    ${lib.concatStringsSep "\n" (lib.mapAttrsToList (name: value:
-      "${name}:::::::"
-        + (if lib.isString value.quota
-              then "userdb_quota_rule=*:storage=${value.quota}"
-              else "")
-    ) cfg.loginAccounts)}
+    ${lib.concatStringsSep "\n" (lib.mapAttrsToList (name: value: (
+      if value.customMaildir == null then (
+        "${name}:::::::"
+      ) else (
+        "${name}:"
+        + ":${builtins.toString value.customMaildir.uid}"
+        + ":${builtins.toString value.customMaildir.gid}"
+        + ":"
+        + ":${value.customMaildir.dovecotHome}"
+        + ":/run/current-system/sw/bin/nologin"
+        + ":userdb_mail=${value.customMaildir.mailDirectorySpec}"
+      )
+    ) + (
+      if lib.isString value.quota then
+        " userdb_quota_rule=*:storage=${value.quota}"
+      else
+        ""
+    )) cfg.loginAccounts)}
     EOF
   '';
 

@@ -140,6 +140,60 @@ in
             '';
           };
 
+          customMaildir = mkOption {
+            type = types.nullOr (types.submodule ({ name, ...}: {
+              options = {
+                uid = mkOption {
+                  type = types.int;
+                  example = 1000;
+                  description = ''
+                    User ID for files and directories in the maildir. Files and
+                    directories created by Dovecot will be assigned this UID.
+                  '';
+                };
+
+                gid = mkOption {
+                  type = types.int;
+                  example = 1000;
+                  description = ''
+                    Group ID for files and directories in the maildir. Files and
+                    directories created by Dovecot will be assigned this GID.
+                  '';
+                };
+
+                dovecotHome = mkOption {
+                  type = types.str;
+                  example = "/home/myusername";
+                  description = ''
+                    Home directory for Dovecot virtual user. This is used to
+                    maintain mail user's private state. This MUST be different
+                    for each Dovecot virtual user and MUST be an absolute path.
+                    Refer to the Dovecot documentation for further information
+                    on this configuration option:
+                    https://wiki.dovecot.org/VirtualUsers/Home
+                  '';
+                };
+
+                mailDirectorySpec = mkOption {
+                  type = types.str;
+                  example = "maildir:~/mail";
+                  description = ''
+                    Dovecot mail location specification. Refer to the Dovecot
+                    documentation for further information on this configuration
+                    option:
+                    https://doc.dovecot.org/configuration_manual/mail_location/
+                  '';
+                };
+              };
+            }));
+            default = null;
+            description = ''
+              Configuration options for a custom Maildir location. For instance,
+              this can be used to implement home-directory Maildirs for specific
+              users only. If null, a Maildir under /var/vmail will be assigned.
+            '';
+          };
+
           sieveScript = mkOption {
             type = with types; nullOr lines;
             default = null;
