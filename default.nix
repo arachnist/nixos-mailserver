@@ -675,6 +675,19 @@ in
       '';
     };
 
+    acmeCertificateName = mkOption {
+      type = types.str;
+      default = cfg.fqdn;
+      example = "example.com";
+      description = ''
+          ({option}`mailserver.certificateScheme` == `acme`)
+
+        When the `acme` `certificateScheme` is selected, you can use this option
+        to override the default certificate name. This is useful if you've
+        generated a wildcard certificate, for example.
+      '';
+    };
+
     enableImap = mkOption {
       type = types.bool;
       default = true;

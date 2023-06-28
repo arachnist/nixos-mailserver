@@ -26,7 +26,7 @@ in
              else if cfg.certificateScheme == "selfsigned"
                   then "${cfg.certificateDirectory}/cert-${cfg.fqdn}.pem"
                   else if cfg.certificateScheme == "acme" || cfg.certificateScheme == "acme-nginx"
-                       then "${config.security.acme.certs.${cfg.fqdn}.directory}/fullchain.pem"
+                       then "${config.security.acme.certs.${cfg.acmeCertificateName}.directory}/fullchain.pem"
                        else throw "unknown certificate scheme";
 
   # key :: PATH
@@ -35,7 +35,7 @@ in
         else if cfg.certificateScheme == "selfsigned"
              then "${cfg.certificateDirectory}/key-${cfg.fqdn}.pem"
               else if cfg.certificateScheme == "acme" || cfg.certificateScheme == "acme-nginx"
-                   then "${config.security.acme.certs.${cfg.fqdn}.directory}/key.pem"
+                   then "${config.security.acme.certs.${cfg.acmeCertificateName}.directory}/key.pem"
                    else throw "unknown certificate scheme";
 
   passwordFiles = let
