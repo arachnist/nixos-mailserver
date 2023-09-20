@@ -144,7 +144,7 @@ let
       smtpd_sasl_security_options = "noanonymous";
       smtpd_sasl_local_domain = "$myhostname";
       smtpd_client_restrictions = "permit_sasl_authenticated,reject";
-      smtpd_sender_login_maps = "hash:/etc/postfix/vaccounts${lib.optionalString cfg.ldap.enable ",ldap:${ldapSenderLoginMapFile}"}${lib.optionalString (regex_valiases_postfix != {}) ",pcre:/etc/postfix/regex_vaccounts"}";
+      smtpd_sender_login_maps = "hash:/etc/postfix/vaccounts${lib.optionalString cfg.ldap.enable ",ldap:${ldapSenderLoginMapFile}"}${lib.optionalString cfg.sendFromAliases ",$virtual_alias_maps"}${lib.optionalString (regex_valiases_postfix != {}) ",pcre:/etc/postfix/regex_vaccounts"}";
       smtpd_sender_restrictions = "reject_sender_login_mismatch";
       smtpd_recipient_restrictions = "reject_non_fqdn_recipient,reject_unknown_recipient_domain,permit_sasl_authenticated,reject";
       cleanup_service_name = "submission-header-cleanup";
