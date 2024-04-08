@@ -294,6 +294,10 @@ in
 	  vsz_limit = ${builtins.toString cfg.lmtpMemoryLimit} MB
         }
 
+        service quota-status {
+	  vsz_limit = ${builtins.toString cfg.quotaStatusMemoryLimit} MB
+	}
+
         recipient_delimiter = ${cfg.recipientDelimiter}
         lmtp_save_to_detail_mailbox = ${cfg.lmtpSaveToDetailMailbox}
 

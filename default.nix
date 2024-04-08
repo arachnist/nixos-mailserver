@@ -468,6 +468,14 @@ in
       '';
     };
 
+    quotaStatusMemoryLimit = mkOption {
+      type = types.int;
+      default = 256;
+      description = ''
+        The memory limit for the quota-status service, in megabytes.
+      '';
+    };
+
     extraVirtualAliases = mkOption {
       type = let
         loginAccount = mkOptionType {
