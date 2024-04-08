@@ -712,6 +712,14 @@ in
       '';
     };
 
+    imapMemoryLimit = mkOption {
+      type = types.int;
+      default = 256;
+      description = ''
+        The memory limit for the imap service, in megabytes.
+      '';
+    };
+
     enableImapSsl = mkOption {
       type = types.bool;
       default = true;

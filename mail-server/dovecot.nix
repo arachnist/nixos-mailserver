@@ -276,6 +276,10 @@ in
           mail_plugins = $mail_plugins imap_sieve
         }
 
+        service imap {
+	  vsz_limit = ${builtins.toString cfg.imapMemoryLimit} MB
+	}
+
         protocol pop3 {
           mail_max_userip_connections = ${toString cfg.maxConnectionsPerUser}
         }
