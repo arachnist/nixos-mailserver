@@ -291,6 +291,7 @@ in
             mode = 0600
             user = ${postfixCfg.user}
           }
+	  vsz_limit = ${builtins.toString cfg.lmtpMemoryLimit} MB
         }
 
         recipient_delimiter = ${cfg.recipientDelimiter}
