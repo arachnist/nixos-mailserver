@@ -32,8 +32,8 @@ let
 
   desc = prJobsets // {
     "master" = mkFlakeJobset "master";
-    "nixos-23.05" = mkFlakeJobset "nixos-23.05";
     "nixos-23.11" = mkFlakeJobset "nixos-23.11";
+    "nixos-24.05" = mkFlakeJobset "nixos-24.05";
   };
 
   log = {

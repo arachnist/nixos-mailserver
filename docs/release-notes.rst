@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+NixOS 24.05
+-----------
+
+- Add new option ``acmeCertificateName`` which can be used to support
+  wildcard certificates
+
 NixOS 23.11
 -----------
 

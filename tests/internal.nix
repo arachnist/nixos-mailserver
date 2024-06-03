@@ -177,7 +177,7 @@ pkgs.nixosTest {
             "set +e; timeout 1 ${pkgs.netcat}/bin/nc -U /run/rspamd/rspamd-milter.sock < /dev/null; [ $? -eq 124 ]"
         )
         machine.succeed(
-            "cat ${sendMail} | ${pkgs.netcat-gnu}/bin/nc localhost 25 | grep -q 'This account cannot receive emails'"
+            "cat ${sendMail} | ${pkgs.netcat-gnu}/bin/nc localhost 25 | grep -q '554 5.5.0 Error'"
         )
 
     with subtest("rspamd controller serves web ui"):
