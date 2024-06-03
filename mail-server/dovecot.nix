@@ -180,13 +180,10 @@ in
         sieve = "file:${cfg.sieveDirectory}/%u/scripts;active=${cfg.sieveDirectory}/%u/active.sieve";
         sieve_default = "file:${cfg.sieveDirectory}/%u/default.sieve";
         sieve_default_name = "default";
+        sieve_extensions = ["+fileinfo"];
       };
 
       sieve = {
-        extensions = [
-          "fileinto"
-        ];
-
         scripts.after = builtins.toFile "spam.sieve" ''
           require "fileinto";
 

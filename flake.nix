@@ -7,7 +7,7 @@
       flake = false;
     };
     utils.url = "github:numtide/flake-utils";
-    nixpkgs.url = "flake:nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:/ntninja/nixpkgs/patch-dovecot-1";
     blobs = {
       url = "gitlab:simple-nixos-mailserver/blobs";
       flake = false;
