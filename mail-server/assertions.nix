@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 {
   assertions = lib.optionals config.mailserver.ldap.enable [
     {

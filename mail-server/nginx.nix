@@ -15,9 +15,7 @@
 #  along with this program. If not, see <http://www.gnu.org/licenses/>
 
 
-{ config, pkgs, lib, ... }:
-
-with (import ./common.nix { inherit config lib pkgs; });
+{ config, lib, ... }:
 
 let
   cfg = config.mailserver;

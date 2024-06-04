@@ -123,9 +123,6 @@ let
      /^Message-ID:\s+<(.*?)@.*?>/ REPLACE Message-ID: <$1@${cfg.fqdn}>
   '');
 
-  inetSocket = addr: port: "inet:[${toString port}@${addr}]";
-  unixSocket = sock: "unix:${sock}";
-
   smtpdMilters =
    (lib.optional cfg.dkimSigning "unix:/run/opendkim/opendkim.sock")
    ++ [ "unix:/run/rspamd/rspamd-milter.sock" ];
