@@ -39,27 +39,6 @@ let
       );
 
   postfixCfg = config.services.postfix;
-  dovecot2Cfg = config.services.dovecot2;
-
-  stateDir = "/var/lib/dovecot";
-
-  pipeBin = pkgs.stdenv.mkDerivation {
-    name = "pipe_bin";
-    src = ./dovecot/pipe_bin;
-    buildInputs = with pkgs; [ makeWrapper coreutils bash rspamd ];
-    buildCommand = ''
-      mkdir -p $out/pipe/bin
-      cp $src/* $out/pipe/bin/
-      chmod a+x $out/pipe/bin/*
-      patchShebangs $out/pipe/bin
-
-      for file in $out/pipe/bin/*; do
-        wrapProgram $file \
-          --set PATH "${pkgs.coreutils}/bin:${pkgs.rspamd}/bin"
-      done
-    '';
-  };
-
 
   ldapConfig = pkgs.writeTextFile {
     name = "dovecot-ldap.conf.ext.template";

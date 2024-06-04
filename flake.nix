@@ -14,7 +14,7 @@
     };
   };
 
-  outputs = { self, utils, blobs, nixpkgs, ... }: let
+  outputs = { self, blobs, nixpkgs, ... }: let
     lib = nixpkgs.lib;
     system = "x86_64-linux";
     pkgs = nixpkgs.legacyPackages.${system};

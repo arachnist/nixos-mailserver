@@ -676,8 +676,8 @@ in
     };
 
     acmeCertificateName = mkOption {
-      type = types.str;
-      default = cfg.fqdn;
+      type = with types; nullOr str;
+      default = cfg.fqdn or null;
       example = "example.com";
       description = ''
           ({option}`mailserver.certificateScheme` == `acme`)
