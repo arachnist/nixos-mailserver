@@ -325,7 +325,7 @@ in
           privileged = true;
           chroot = false;
           command = "spawn";
-          args = [ "user=nobody" "argv=${pkgs.pypolicyd-spf}/bin/policyd-spf" "${policyd-spf}"];
+          args = [ "user=nobody" "argv=${pkgs.spf-engine}/bin/policyd-spf" "${policyd-spf}"];
         };
         "submission-header-cleanup" = {
           type = "unix";
