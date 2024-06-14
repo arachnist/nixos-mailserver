@@ -6,7 +6,6 @@
       url = "github:edolstra/flake-compat";
       flake = false;
     };
-    utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "flake:nixpkgs/nixos-unstable";
     nixpkgs-24_05.url = "flake:nixpkgs/nixos-24.05";
     blobs = {
@@ -15,7 +14,7 @@
     };
   };
 
-  outputs = { self, utils, blobs, nixpkgs, nixpkgs-24_05, ... }: let
+  outputs = { self, blobs, nixpkgs, nixpkgs-24_05, ... }: let
     lib = nixpkgs.lib;
     system = "x86_64-linux";
     pkgs = nixpkgs.legacyPackages.${system};
