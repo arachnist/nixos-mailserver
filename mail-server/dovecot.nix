@@ -76,7 +76,7 @@ let
       auth_bind = yes
       base = ${cfg.ldap.searchBase}
       scope = ${mkLdapSearchScope cfg.ldap.searchScope}
-      ${lib.optionalString (cfg.ldap.dovecot.userAttrs != "") ''
+      ${lib.optionalString (cfg.ldap.dovecot.userAttrs != null) ''
       user_attrs = ${cfg.ldap.dovecot.userAttrs}
       ''}
       user_filter = ${cfg.ldap.dovecot.userFilter}
