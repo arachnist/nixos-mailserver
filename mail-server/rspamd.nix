@@ -25,6 +25,15 @@ let
 in
 {
   config = with cfg; lib.mkIf enable {
+    environment.systemPackages = lib.mkBefore [
+      (pkgs.runCommand "rspamc-wrapped" {
+        nativeBuildInputs = with pkgs; [ makeWrapper ];
+       }''
+        makeWrapper ${pkgs.rspamd}/bin/rspamc $out/bin/rspamc \
+          --add-flags "-h /var/run/rspamd/worker-controller.sock"
+      '')
+    ];
+
     services.rspamd = {
       enable = true;
       inherit debug;

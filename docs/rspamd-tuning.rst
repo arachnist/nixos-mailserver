@@ -24,17 +24,14 @@ You can run the training in a root shell as follows:
 
 .. code:: bash
 
-  # Path to the controller socket
-  export RSOCK="/var/run/rspamd/worker-controller.sock"
-
   # Learn the Junk folder as spam
-  rspamc -h $RSOCK learn_spam /var/vmail/$DOMAIN/$USER/.Junk/cur/
+  rspamc learn_spam /var/vmail/$DOMAIN/$USER/.Junk/cur/
 
   # Learn the INBOX as ham
-  rspamc -h $RSOCK learn_ham /var/vmail/$DOMAIN/$USER/cur/
+  rspamc learn_ham /var/vmail/$DOMAIN/$USER/cur/
 
   # Check that training was successful
-  rspamc -h $RSOCK stat | grep learned
+  rspamc stat | grep learned
 
 Tune symbol weight
 ~~~~~~~~~~~~~~~~~~
