@@ -278,7 +278,7 @@ in
       dovecot = {
         userAttrs = mkOption {
           type = types.nullOr types.str;
-          default = "";
+          default = null;
           description = ''
             LDAP attributes to be retrieved during userdb lookups.
 
