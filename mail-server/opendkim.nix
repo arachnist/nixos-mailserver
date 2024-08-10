@@ -41,13 +41,13 @@ let
               echo "Generated key for domain ${dom} selector ${cfg.dkimSelector}"
           fi
         '';
-  createAllCerts = lib.concatStringsSep "\n" (map createDomainDkimCert cfg.domains);
+  createAllCerts = lib.concatStringsSep "\n" (map createDomainDkimCert cfg.relayDomains);
 
   keyTable = pkgs.writeText "opendkim-KeyTable"
-    (lib.concatStringsSep "\n" (lib.flip map cfg.domains
+    (lib.concatStringsSep "\n" (lib.flip map cfg.relayDomains
       (dom: "${dom} ${dom}:${cfg.dkimSelector}:${cfg.dkimKeyDirectory}/${dom}.${cfg.dkimSelector}.key")));
   signingTable = pkgs.writeText "opendkim-SigningTable"
-    (lib.concatStringsSep "\n" (lib.flip map cfg.domains (dom: "${dom} ${dom}")));
+    (lib.concatStringsSep "\n" (lib.flip map cfg.relayDomains (dom: "${dom} ${dom}")));
 
   dkim = config.services.opendkim;
   args = [ "-f" "-l" ] ++ lib.optionals (dkim.configFile != null) [ "-x" dkim.configFile ];
@@ -58,7 +58,7 @@ in
         enable = true;
         selector = cfg.dkimSelector;
         keyPath = cfg.dkimKeyDirectory;
-        domains = "csl:${builtins.concatStringsSep "," cfg.domains}";
+        domains = "csl:${builtins.concatStringsSep "," cfg.relayDomains}";
         configFile = pkgs.writeText "opendkim.conf" (''
           Canonicalization ${cfg.dkimHeaderCanonicalization}/${cfg.dkimBodyCanonicalization}
           UMask 0002
