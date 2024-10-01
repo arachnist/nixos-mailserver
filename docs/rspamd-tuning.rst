@@ -93,18 +93,13 @@ With an nginx reverse-proxy
 
 If you have a secured nginx reverse proxy set on the host, you can use it to expose the socket.
 **Keep in mind the UI is unsecured by default, you need to setup an authentication scheme**, for
-exemple with `basic auth <https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/>`_:
+example with `basic auth <https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/>`_:
 
 .. code:: nix
 
-  services.nginx.virtualHosts.rspamd = {
-    forceSSL = true;
-    enableACME = true;
-    basicAuthFile = "/basic/auth/hashes/file";
-    serverName = "rspamd.example.com";
-    locations = {
-      "/" = {
-        proxyPass = "http://unix:/run/rspamd/worker-controller.sock:/";
-      };
-    };
+  mailserver.rspamdWebUi = {
+    enable = true;
+    domain = "rspamd.example.com";
   };
+
+  services.nginx.virtualHosts."${config.mailserver.rspamdWebUi.domain}".basicAuthFile = "/basic/auth/hashes/file";
