@@ -59,7 +59,6 @@ in
       enable = true;
       virtualHosts = {
         "${cfg.rspamdWebUi.domain}" = {
-          enableACME = true;
           forceSSL = true;
           locations."/".proxyPass = "http://unix:/run/rspamd/worker-controller.sock:/";
         };
