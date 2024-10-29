@@ -211,6 +211,10 @@ You can check this with
 
 Note that it can take a while until a DNS entry is propagated.
 
+Note that tools like `mxtoolbox.com <http://mxtoolbox.com/>`__ will warn that
+the ``p=none`` doesn't actually enforce anything. This is good for getting
+started, but you should consider increasing the strictness and configuring
+``DMARC`` reports. See :doc:`dmarc` for more information.
 
 Test your Setup
 ~~~~~~~~~~~~~~~
