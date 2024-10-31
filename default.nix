@@ -781,6 +781,27 @@ in
       '';
     };
 
+    dkimPrivateKeyFiles = mkOption {
+      type = types.nullOr (types.attrsOf types.path);
+      default = null;
+      example = {
+        "mail.example.com" = "/run/secrets/dkim/mail.example.com.mail.key";
+      };
+      description = ''
+        Paths to opendkim private keys generated with `opendkim-genkey`,
+        indexed by domain name.
+        If `null`, then the keys are auto generated.
+        If not `null`, then there must be an entry for every domain in
+        {option}`config.mailserver.domains`.
+
+        >>> TODO: explain/assert how this interacts with `dkimKeyBits`. would
+        this be cleaner if we had an explicit "generate dkim keys" option that
+        defaults to true, and perhaps we move the generation option (just
+        `dkimKeyBits` right now) under an optional `generateOpts` section? this
+        is not backward compatible, though <<<
+      '';
+    };
+
     dkimKeyDirectory = mkOption {
       type = types.path;
       default = "/var/dkim";
