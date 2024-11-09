@@ -62,7 +62,7 @@ in
 
     cat ${file} > ${destination}
     echo -n '${prefix}' >> ${destination}
-    cat ${passwordFile} >> ${destination}
+    cat ${passwordFile} | tr -d '\n' >> ${destination}
     echo -n '${suffix}' >> ${destination}
     chmod 600 ${destination}
   '';
