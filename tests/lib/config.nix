@@ -1,3 +1,3 @@
 {
-    security.dhparams.defaultBitSize = 1024; # minimum size required by dovecot
+    security.dhparams.defaultBitSize = 2048; # minimum size required by dovecot
 }
