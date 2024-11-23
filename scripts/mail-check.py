@@ -5,6 +5,7 @@ import uuid
 import imaplib
 from datetime import datetime, timedelta
 import email
+import email.utils
 import time
 
 RETRY = 100
@@ -15,11 +16,16 @@ def _send_mail(smtp_host, smtp_port, smtp_username, from_addr, from_pwd, to_addr
         "From: {from_addr}",
         "To: {to_addr}",
         "Subject: {subject}",
+        "Message-ID: {random}@mail-check.py",
+        "Date: {date}",
         "",
         "This validates our mail server can send to Gmail :/"]).format(
             from_addr=from_addr,
             to_addr=to_addr,
-            subject=subject)
+            subject=subject,
+            random=str(uuid.uuid4()),
+            date=email.utils.formatdate(),
+            )
 
 
     retry = RETRY
