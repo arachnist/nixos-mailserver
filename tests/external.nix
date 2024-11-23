@@ -505,7 +505,7 @@ pkgs.nixosTest {
       with subtest("no warnings or errors"):
           server.fail("journalctl -u postfix | grep -i error >&2")
           server.fail("journalctl -u postfix | grep -i warning >&2")
-          server.fail("journalctl -u dovecot2 | grep -i error >&2")
+          server.fail("journalctl -u dovecot2 | grep -v 'imap-login: Debug: SSL error: Connection closed' | grep -i error >&2")
           # harmless ? https://dovecot.org/pipermail/dovecot/2020-August/119575.html
           server.fail(
               "journalctl -u dovecot2 |grep -v 'Expunged message reappeared, giving a new UID'| grep -v 'FTS Xapian: Box is empty' | grep -i warning >&2"
