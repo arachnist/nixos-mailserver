@@ -191,6 +191,20 @@ let
     passwordFile = cfg.ldap.bind.passwordFile;
     destination = ldapVirtualMailboxMapFile;
   };
+
+  ldapVirtualAliasMap = pkgs.writeText "ldap-virtual-alias-map.cf" ''
+    ${commonLdapConfig}
+    query_filter = ${cfg.ldap.postfix.filter}
+    result_attribute = ${cfg.ldap.postfix.mailAttribute}
+  '';
+  ldapVirtualAliasMapFile = "/run/postfix/ldap-virtual-alias-map.cf";
+  appendPwdInVirtualAliasMap = appendLdapBindPwd {
+    name = "ldap-virtual-alias-map";
+    file = ldapVirtualAliasMap;
+    prefix = "bind_pw = ";
+    passwordFile = cfg.ldap.bind.passwordFile;
+    destination = ldapVirtualAliasMapFile;
+  };
 in
 {
   config = with cfg; lib.mkIf enable {
@@ -198,6 +212,7 @@ in
     systemd.services.postfix-setup = lib.mkIf cfg.ldap.enable {
       preStart = ''
         ${appendPwdInVirtualMailboxMap}
+        ${appendPwdInVirtualAliasMap}
         ${appendPwdInSenderLoginMap}
       '';
       restartTriggers = [ appendPwdInVirtualMailboxMap appendPwdInSenderLoginMap ];
@@ -242,6 +257,8 @@ in
         ];
         virtual_alias_maps = lib.mkAfter (lib.optionals (regex_valiases_postfix != {}) [
           (mappedRegexFile "regex_valias")
+        ] ++ lib.optionals (cfg.ldap.enable) [
+          "ldap:${ldapVirtualAliasMapFile}"
         ]);
         virtual_transport = "lmtp:unix:/run/dovecot2/dovecot-lmtp";
         # Avoid leakage of X-Original-To, X-Delivered-To headers between recipients
