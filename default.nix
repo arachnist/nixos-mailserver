@@ -804,7 +804,7 @@ in
         Paths to opendkim private keys generated with `opendkim-genkey`,
         indexed by domain name.
         If `null`, then the keys are auto generated.
-        If not `null`, then there must be an entry for every domain in
+        If set, then there must be an entry for every domain in
         {option}`config.mailserver.domains`.
 
         >>> TODO: explain/assert how this interacts with `dkimKeyBits`. would

@@ -27,13 +27,11 @@ let
     let
       dkim_key = "${cfg.dkimKeyDirectory}/${dom}.${cfg.dkimSelector}.key";
       dkim_txt = "${cfg.dkimKeyDirectory}/${dom}.${cfg.dkimSelector}.txt";
+      dkimPrivateKeyFile = cfg.dkimPrivateKeyFiles.${dom};
     in
       if cfg.dkimPrivateKeyFiles != null then
-        let
-          dkimPrivateKeyFile = cfg.dkimPrivateKeyFiles.${dom};
-        in
         ''
-          if [ ! -f "${dkimPrivateKeyFile}" ]; then
+          if [ ! -e "${dkimPrivateKeyFile}" ]; then
             echo "DKIM keyfile does not exist: ${dkimPrivateKeyFile}"
             exit 1
           fi
@@ -42,7 +40,7 @@ let
         ''
       else
         ''
-          if [ ! -f "${dkim_key}" ]; then
+          if [ ! -e "${dkim_key}" ]; then
               ${pkgs.opendkim}/bin/opendkim-genkey -s "${cfg.dkimSelector}" \
                                                    -d "${dom}" \
                                                    --bits="${toString cfg.dkimKeyBits}" \
