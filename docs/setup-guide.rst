@@ -133,7 +133,7 @@ You can check this with
 
 ::
 
-   $ nix-shell -p bind --command "host -t mx example.com"
+   $ host -t mx example.com
    example.com mail is handled by 10 mail.example.com.
 
 Note that it can take a while until a DNS entry is propagated.
@@ -154,7 +154,7 @@ You can check this with
 
 ::
 
-   $ nix-shell -p bind --command "host -t TXT example.com"
+   $ host -t TXT example.com
    example.com descriptive text "v=spf1 a:mail.example.com -all"
 
 Note that it can take a while until a DNS entry is propagated.
@@ -186,7 +186,7 @@ You can check this with
 
 ::
 
-   $ nix-shell -p bind --command "host -t txt mail._domainkey.example.com"
+   $ host -t txt mail._domainkey.example.com
    mail._domainkey.example.com descriptive text "v=DKIM1;p=<really-long-key>"
 
 Note that it can take a while until a DNS entry is propagated.
@@ -206,7 +206,7 @@ You can check this with
 
 ::
 
-   $ nix-shell -p bind --command "host -t TXT _dmarc.example.com"
+   $ host -t TXT _dmarc.example.com
    _dmarc.example.com descriptive text "v=DMARC1; p=none"
 
 Note that it can take a while until a DNS entry is propagated.
