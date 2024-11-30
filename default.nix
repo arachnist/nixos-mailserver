@@ -793,12 +793,6 @@ in
         If `null`, then the keys are auto generated.
         If set, then there must be an entry for every domain in
         {option}`config.mailserver.domains`.
-
-        >>> TODO: explain/assert how this interacts with `dkimKeyBits`. would
-        this be cleaner if we had an explicit "generate dkim keys" option that
-        defaults to true, and perhaps we move the generation option (just
-        `dkimKeyBits` right now) under an optional `generateOpts` section? this
-        is not backward compatible, though <<<
       '';
     };
 
@@ -811,8 +805,8 @@ in
     };
 
     dkimKeyBits = mkOption {
-        type = types.int;
-        default = 1024;
+        type = types.nullOr types.int;
+        default = if cfg.dkimPrivateKeyFiles == null then 1024 else null;
         description = ''
             How many bits in generated DKIM keys. RFC6376 advises minimum 1024-bit keys.
 
