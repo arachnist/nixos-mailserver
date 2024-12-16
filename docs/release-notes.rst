@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+NixOS 24.11
+-----------
+
+- No new feature, only bug fixes and documentation improvements
+
 NixOS 24.05
 -----------
 

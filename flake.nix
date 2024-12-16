@@ -7,14 +7,14 @@
       flake = false;
     };
     nixpkgs.url = "flake:nixpkgs/nixos-unstable";
-    nixpkgs-24_05.url = "flake:nixpkgs/nixos-24.05";
+    nixpkgs-24_11.url = "flake:nixpkgs/nixos-24.11";
     blobs = {
       url = "gitlab:simple-nixos-mailserver/blobs";
       flake = false;
     };
   };
 
-  outputs = { self, blobs, nixpkgs, nixpkgs-24_05, ... }: let
+  outputs = { self, blobs, nixpkgs, nixpkgs-24_11, ... }: let
     lib = nixpkgs.lib;
     system = "x86_64-linux";
     pkgs = nixpkgs.legacyPackages.${system};
@@ -24,8 +24,8 @@
         pkgs = nixpkgs.legacyPackages.${system};
       }
       {
-        name = "24.05";
-        pkgs = nixpkgs-24_05.legacyPackages.${system};
+        name = "24.11";
+        pkgs = nixpkgs-24_11.legacyPackages.${system};
       }
     ];
     testNames = [

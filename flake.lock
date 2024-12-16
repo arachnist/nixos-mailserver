@@ -47,18 +47,18 @@
         "type": "indirect"
       }
     },
-    "nixpkgs-24_05": {
+    "nixpkgs-24_11": {
       "locked": {
-        "lastModified": 1731797254,
-        "narHash": "sha256-df3dJApLPhd11AlueuoN0Q4fHo/hagP75LlM5K1sz9g=",
+        "lastModified": 1734083684,
+        "narHash": "sha256-5fNndbndxSx5d+C/D0p/VF32xDiJCJzyOqorOYW4JEo=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "e8c38b73aeb218e27163376a2d617e61a2ad9b59",
+        "rev": "314e12ba369ccdb9b352a4db26ff419f7c49fa84",
         "type": "github"
       },
       "original": {
         "id": "nixpkgs",
-        "ref": "nixos-24.05",
+        "ref": "nixos-24.11",
         "type": "indirect"
       }
     },
@@ -67,7 +67,7 @@
         "blobs": "blobs",
         "flake-compat": "flake-compat",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-24_05": "nixpkgs-24_05"
+        "nixpkgs-24_11": "nixpkgs-24_11"
       }
     }
   },
