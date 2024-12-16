@@ -20,25 +20,30 @@ an up and running mail server. Once the server is deployed, we could
 then set all DNS entries required to send and receive mails on this
 server.
 
-Setup DNS A record for server
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Setup DNS A/AAAA records for server
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Add a DNS record to the domain ``example.com`` with the following
+Add DNS records to the domain ``example.com`` with the following
 entries
 
 ==================== ===== ==== =============
 Name (Subdomain)     TTL   Type Value
 ==================== ===== ==== =============
 ``mail.example.com`` 10800 A    ``1.2.3.4``
+``mail.example.com`` 10800 AAAA ``2001::1``
 ==================== ===== ==== =============
+
+If your server does not have an IPv6 address, you must skip the `AAAA` record.
 
 You can check this with
 
 ::
 
-   $ ping mail.example.com
-   64 bytes from mail.example.com (1.2.3.4): icmp_seq=1 ttl=46 time=21.3 ms
-   ...
+   $ nix-shell -p bind --command "host -t A mail.example.com"
+   mail.example.com has address 1.2.3.4
+
+   $ nix-shell -p bind --command "host -t AAAA mail.example.com"
+   mail.example.com has address 2001::1
 
 Note that it can take a while until a DNS entry is propagated. This
 DNS entry is required for the Let's Encrypt certificate generation
@@ -98,8 +103,11 @@ Set rDNS (reverse DNS) entry for server
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Wherever you have rented your server, you should be able to set reverse
-DNS entries for the IP’s you own. Add an entry resolving ``1.2.3.4``
-to ``mail.example.com``.
+DNS entries for the IP’s you own:
+
+- Add an entry resolving IPv4 address ``1.2.3.4`` to ``mail.example.com``.
+- Add an entry resolving IPv6 ``2001::1`` to ``mail.example.com``. Again, this
+  must be skipped if your server does not have an IPv6 address.
 
 .. warning::
 
@@ -114,6 +122,9 @@ You can check this with
 
    $ nix-shell -p bind --command "host 1.2.3.4"
    4.3.2.1.in-addr.arpa domain name pointer mail.example.com.
+
+   $ nix-shell -p bind --command "host 2001::1"
+   1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1.0.0.2.ip6.arpa domain name pointer mail.example.com.
 
 Note that it can take a while until a DNS entry is propagated.
 
