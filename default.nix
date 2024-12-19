@@ -506,7 +506,7 @@ in
 
     rejectSender = mkOption {
       type = types.listOf types.str;
-      example = [ "@example.com" "spammer@example.net" ];
+      example = [ "example.com" "spammer@example.net" ];
       description = ''
         Reject emails from these addresses from unauthorized senders.
         Use if a spammer is using the same domain or the same sender over and over.
