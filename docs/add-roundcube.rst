@@ -9,8 +9,6 @@ servers may require more work.
 
    { config, pkgs, lib, ... }:
 
-   with lib;
-
    {
      services.roundcube = {
         enable = true;
