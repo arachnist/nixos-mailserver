@@ -460,6 +460,22 @@ in
       '';
     };
 
+    lmtpMemoryLimit = mkOption {
+      type = types.int;
+      default = 256;
+      description = ''
+        The memory limit for the LMTP service, in megabytes.
+      '';
+    };
+
+    quotaStatusMemoryLimit = mkOption {
+      type = types.int;
+      default = 256;
+      description = ''
+        The memory limit for the quota-status service, in megabytes.
+      '';
+    };
+
     extraVirtualAliases = mkOption {
       type = let
         loginAccount = mkOptionType {
@@ -693,6 +709,14 @@ in
       default = true;
       description = ''
         Whether to enable IMAP with STARTTLS on port 143.
+      '';
+    };
+
+    imapMemoryLimit = mkOption {
+      type = types.int;
+      default = 256;
+      description = ''
+        The memory limit for the imap service, in megabytes.
       '';
     };
 

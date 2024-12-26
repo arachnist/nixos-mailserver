@@ -276,6 +276,10 @@ in
           mail_plugins = $mail_plugins imap_sieve
         }
 
+        service imap {
+	  vsz_limit = ${builtins.toString cfg.imapMemoryLimit} MB
+	}
+
         protocol pop3 {
           mail_max_userip_connections = ${toString cfg.maxConnectionsPerUser}
         }
@@ -291,7 +295,12 @@ in
             mode = 0600
             user = ${postfixCfg.user}
           }
+	  vsz_limit = ${builtins.toString cfg.lmtpMemoryLimit} MB
         }
+
+        service quota-status {
+	  vsz_limit = ${builtins.toString cfg.quotaStatusMemoryLimit} MB
+	}
 
         recipient_delimiter = ${cfg.recipientDelimiter}
         lmtp_save_to_detail_mailbox = ${cfg.lmtpSaveToDetailMailbox}
