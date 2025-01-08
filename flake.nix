@@ -34,12 +34,13 @@
       "clamav"
       "multiple"
       "ldap"
+      "relay"
     ];
     genTest = testName: release: {
       "name"= "${testName}-${builtins.replaceStrings ["."] ["_"] release.name}";
       "value"= import (./tests/. + "/${testName}.nix") {
         pkgs = release.pkgs;
-        inherit blobs;
+        inherit blobs lib;
       };
     };
     # Generate an attribute set such as
