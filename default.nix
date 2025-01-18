@@ -395,12 +395,6 @@ in
         '';
       };
 
-      indexAttachments = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Also index text-only attachements. Binary attachements are never indexed.";
-      };
-
       enforced = mkOption {
         type = types.enum [ "yes" "no" "body" ];
         default = "no";
@@ -413,14 +407,9 @@ in
       };
 
       minSize = mkOption {
-        type = types.int;
-        default = 2;
-        description = "Size of the smallest n-gram to index.";
-      };
-      maxSize = mkOption {
-        type = types.int;
-        default = 20;
-        description = "Size of the largest n-gram to index.";
+        type = types.ints.between 3 1000;
+        default = 3;
+        description = "Minimum size of search terms";
       };
       memoryLimit = mkOption {
         type = types.nullOr types.int;
@@ -1321,6 +1310,12 @@ in
   };
 
   imports = [
+    (lib.mkRemovedOptionModule [ "mailserver" "fullTextSearch" "maxSize" ] ''
+    This option is not needed since fts-xapian 1.8.3
+    '')
+    (lib.mkRemovedOptionModule [ "mailserver" "fullTextSearch" "indexAttachments" ] ''
+    Text attachments are always indexed since fts-xapian 1.4.8
+    '')
     ./mail-server/assertions.nix
     ./mail-server/borgbackup.nix
     ./mail-server/debug.nix

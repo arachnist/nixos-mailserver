@@ -20,8 +20,6 @@ To enable indexing for full text search here is an example configuration.
         enable = true;
         # index new email as they arrive
         autoIndex = true;
-        # this only applies to plain text attachments, binary attachments are never indexed
-        indexAttachments = true;
         enforced = "body";
       };
     };
@@ -61,8 +59,7 @@ Mitigating resources requirements
 
 You can:
 
-* disable indexation of attachements ``mailserver.fullTextSearch.indexAttachments = false``
-* reduce the size of ngrams to be indexed ``mailserver.fullTextSearch.minSize`` and ``maxSize``
+* increase the minimum search term size ``mailserver.fullTextSearch.minSize``
 * disable automatic indexation for some folders with
   ``mailserver.fullTextSearch.autoIndexExclude``.  Folders can be specified by
   name (``"Trash"``), by special use (``"\\Junk"``) or with a wildcard.

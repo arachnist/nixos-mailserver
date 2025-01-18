@@ -352,7 +352,7 @@ in
         plugin {
           plugin = fts fts_xapian
           fts = xapian
-          fts_xapian = partial=${toString cfg.fullTextSearch.minSize} full=${toString cfg.fullTextSearch.maxSize} attachments=${bool2int cfg.fullTextSearch.indexAttachments} verbose=${bool2int cfg.debug}
+          fts_xapian = partial=${toString cfg.fullTextSearch.minSize} verbose=${bool2int cfg.debug}
 
           fts_autoindex = ${if cfg.fullTextSearch.autoIndex then "yes" else "no"}
 
@@ -361,11 +361,12 @@ in
           fts_enforced = ${cfg.fullTextSearch.enforced}
         }
 
-        ${lib.optionalString (cfg.fullTextSearch.memoryLimit != null) ''
         service indexer-worker {
+        ${lib.optionalString (cfg.fullTextSearch.memoryLimit != null) ''
           vsz_limit = ${toString (cfg.fullTextSearch.memoryLimit*1024*1024)}
-        }
         ''}
+          process_limit = 0
+        }
         ''}
 
         lda_mailbox_autosubscribe = yes

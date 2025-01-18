@@ -322,7 +322,7 @@ pkgs.nixosTest {
             Hello User1,
 
             this email contains the needle:
-            576a4565b70f5a4c1a0925cabdb587a6 
+            576a4565b70f5a4c1a0925cabdb587a6
           '';
           "root/email7".text = ''
             Message-ID: <1234578qwerty@host.local.network>
@@ -508,7 +508,7 @@ pkgs.nixosTest {
           server.fail("journalctl -u dovecot2 | grep -v 'imap-login: Debug: SSL error: Connection closed' | grep -i error >&2")
           # harmless ? https://dovecot.org/pipermail/dovecot/2020-August/119575.html
           server.fail(
-              "journalctl -u dovecot2 |grep -v 'Expunged message reappeared, giving a new UID'| grep -v 'FTS Xapian: Box is empty' | grep -i warning >&2"
+              "journalctl -u dovecot2 |grep -v 'Expunged message reappeared, giving a new UID'| grep -v 'FTS Xapian: Box is empty' | grep -vE 'FTS Xapian:.*does not exist. Creating it' | grep -i warning >&2"
           )
     '';
 }
