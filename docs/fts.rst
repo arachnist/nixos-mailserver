@@ -4,7 +4,7 @@ Full text search
 By default, when your IMAP client searches for an email containing some
 text in its *body*, dovecot will read all your email sequentially. This
 is very slow and IO intensive. To speed body searches up, it is possible to
-*index* emails with a plugin to dovecot, ``fts_xapian``.
+*index* emails with a plugin to dovecot, ``fts_flatcurve``.
 
 Enabling full text search
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,16 +50,15 @@ recommended to move indices in a different location, such as
 
 Indexation itself is rather resouces intensive, in CPU, and for emails with
 large headers, in memory as well. Initial indexation of existing emails can take
-hours. If the indexer worker is killed or segfaults during indexation, it can
-be that it tried to allocate more memory than allowed. You can increase the memory
-limit by eg ``mailserver.fullTextSearch.memoryLimit = 2000`` (in MiB).
+hours.
 
 Mitigating resources requirements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You can:
 
-* increase the minimum search term size ``mailserver.fullTextSearch.minSize``
+* exclude some headers from indexation with ``mailserver.fullTextSearch.headerExcludes``
+* disable expensive token normalisation in ``mailserver.fullTextSearch.filters``
 * disable automatic indexation for some folders with
   ``mailserver.fullTextSearch.autoIndexExclude``.  Folders can be specified by
   name (``"Trash"``), by special use (``"\\Junk"``) or with a wildcard.

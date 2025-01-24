@@ -81,8 +81,6 @@ pkgs.nixosTest {
                 # special use depends on https://github.com/NixOS/nixpkgs/pull/93201
                 autoIndexExclude = [ (if (pkgs.lib.versionAtLeast pkgs.lib.version "21") then "\\Junk" else "Junk") ];
                 enforced = "yes";
-                # fts-xapian warns when memory is low, which makes the test fail
-                memoryLimit = 100000;
               };
             };
         };
@@ -493,11 +491,9 @@ pkgs.nixosTest {
           # should fail because this folder is not indexed
           client.fail("search Junk a >&2")
           # check that search really goes through the indexer
-          server.succeed(
-              "journalctl -u dovecot2 | grep -E 'indexer-worker.* Done indexing .INBOX.' >&2"
-          )
+          server.succeed("journalctl -u dovecot2 | grep 'fts-flatcurve(INBOX): Query ' >&2")
           # check that Junk is not indexed
-          server.fail("journalctl -u dovecot2 | grep 'indexer-worker' | grep -i 'JUNK' >&2")
+          server.fail("journalctl -u dovecot2 | grep 'fts-flatcurve(JUNK): Indexing ' >&2")
 
       with subtest("dmarc reporting"):
           server.systemctl("start rspamd-dmarc-reporter.service")
@@ -507,8 +503,6 @@ pkgs.nixosTest {
           server.fail("journalctl -u postfix | grep -i warning >&2")
           server.fail("journalctl -u dovecot2 | grep -v 'imap-login: Debug: SSL error: Connection closed' | grep -i error >&2")
           # harmless ? https://dovecot.org/pipermail/dovecot/2020-August/119575.html
-          server.fail(
-              "journalctl -u dovecot2 |grep -v 'Expunged message reappeared, giving a new UID'| grep -v 'FTS Xapian: Box is empty' | grep -vE 'FTS Xapian:.*does not exist. Creating it' | grep -i warning >&2"
-          )
+          server.fail("journalctl -u dovecot2 | grep -v 'Expunged message reappeared, giving a new UID' | grep -i warning >&2")
     '';
 }
