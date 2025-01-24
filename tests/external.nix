@@ -87,8 +87,8 @@ pkgs.nixosTest {
             };
         };
       client = { nodes, config, pkgs, ... }: let
-        serverIP = nodes.server.config.networking.primaryIPAddress;
-        clientIP = nodes.client.config.networking.primaryIPAddress;
+        serverIP = nodes.server.networking.primaryIPAddress;
+        clientIP = nodes.client.networking.primaryIPAddress;
         grep-ip = pkgs.writeScriptBin "grep-ip" ''
           #!${pkgs.stdenv.shell}
           echo grep '${clientIP}' "$@" >&2
