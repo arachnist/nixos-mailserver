@@ -20,7 +20,7 @@ pkgs.nixosTest {
 
       services.openssh = {
         enable = true;
-        permitRootLogin = "yes";
+        settings.PermitRootLogin = "yes";
       };
 
       environment.systemPackages = [
