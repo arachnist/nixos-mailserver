@@ -8,7 +8,7 @@ let
     { enabled = 1;
       hidden = false;
       description = "PR ${num}: ${info.title}";
-      checkinterval = 30;
+      checkinterval = 300;
       schedulingshares = 20;
       enableemail = false;
       emailoverride = "";
@@ -19,7 +19,7 @@ let
   ) prs;
   mkFlakeJobset = branch: {
     description = "Build ${branch} branch of Simple NixOS MailServer";
-    checkinterval = "60";
+    checkinterval = 300;
     enabled = "1";
     schedulingshares = 100;
     enableemail = false;
