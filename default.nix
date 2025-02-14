@@ -575,7 +575,7 @@ in
         - /var/vmail/example.com/user/.folder.subfolder/ (default layout)
         - /var/vmail/example.com/user/folder/subfolder/  (FS layout)
 
-        See https://wiki2.dovecot.org/MailboxFormat/Maildir for details.
+        See https://doc.dovecot.org/main/core/config/mailbox_formats/maildir.html#maildir-mailbox-format for details.
       '';
     };
 
@@ -596,7 +596,7 @@ in
         This affects how mailboxes appear to mail clients and sieve scripts.
         For instance when using "." then in a sieve script "example.com" would refer to the mailbox "com" in the parent mailbox "example".
         This does not determine the way your mails are stored on disk.
-        See https://wiki.dovecot.org/Namespaces for details.
+        See https://doc.dovecot.org/main/core/config/namespaces.html#namespaces for details.
       '';
     };
 
