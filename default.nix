@@ -1236,6 +1236,7 @@ in
         description = ''
           Whether to enable automatic reboot after kernel upgrades.
           This is to be used in conjunction with `system.autoUpgrade.enable = true;`
+          This can also be achieved via `system.autoUpgrade.allowReboot = true;`
         '';
       };
       method = mkOption {
