@@ -43,22 +43,25 @@ let
 
   stateDir = "/var/lib/dovecot";
 
-  pipeBin = pkgs.stdenv.mkDerivation {
-    name = "pipe_bin";
-    src = ./dovecot/pipe_bin;
-    buildInputs = with pkgs; [ makeWrapper coreutils bash rspamd ];
-    buildCommand = ''
-      mkdir -p $out/pipe/bin
-      cp $src/* $out/pipe/bin/
-      chmod a+x $out/pipe/bin/*
-      patchShebangs $out/pipe/bin
+  pipeBin_ = { makeWrapper, coreutils, bash, rspamd }:
+    pkgs.stdenv.mkDerivation {
+      name = "pipe_bin";
+      src = ./dovecot/pipe_bin;
+      nativeBuildInputs = [ makeWrapper ];
+      buildInputs = [ coreutils bash rspamd ];
+      buildCommand = ''
+        mkdir -p $out/pipe/bin
+        cp $src/* $out/pipe/bin/
+        chmod a+x $out/pipe/bin/*
+        patchShebangs $out/pipe/bin
 
-      for file in $out/pipe/bin/*; do
-        wrapProgram $file \
-          --set PATH "${pkgs.coreutils}/bin:${pkgs.rspamd}/bin"
-      done
-    '';
-  };
+        for file in $out/pipe/bin/*; do
+          wrapProgram $file \
+            --set PATH "${coreutils}/bin:${rspamd}/bin"
+        done
+      '';
+    };
+  pipeBin = pkgs.callPackage pipeBin_ { };
 
 
   ldapConfig = pkgs.writeTextFile {
@@ -97,7 +100,7 @@ let
   };
 
   genPasswdScript = pkgs.writeScript "generate-password-file" ''
-    #!${pkgs.stdenv.shell}
+    #!${pkgs.runtimeShell}
 
     set -euo pipefail
 
