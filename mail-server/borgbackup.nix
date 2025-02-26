@@ -65,12 +65,16 @@ in {
       description = "borgbackup";
       unitConfig.Documentation = "man:borgbackup";
       script = borgScript;
+      # borg writes to $HOME/.config but in our case it also works on $HOME (/var/vmail)
+      # Setting $HOME to /tmp to avoid it
+      environment.HOME = "/tmp";
       serviceConfig = {
         User = cfg.user;
         Group = cfg.group;
         CPUSchedulingPolicy = "idle";
         IOSchedulingClass = "idle";
         ProtectSystem = "full";
+        PrivateTmp = true;
       };
       startAt = cfg.startAt;
     };
