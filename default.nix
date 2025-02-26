@@ -794,6 +794,21 @@ in
       '';
     };
 
+    dkimPrivateKeyFiles = mkOption {
+      type = types.nullOr (types.attrsOf types.path);
+      default = null;
+      example = {
+        "mail.example.com" = "/run/secrets/dkim/mail.example.com.mail.key";
+      };
+      description = ''
+        Paths to opendkim private keys generated with `opendkim-genkey`,
+        indexed by domain name.
+        If `null`, then the keys are auto generated.
+        If set, then there must be an entry for every domain in
+        {option}`config.mailserver.domains`.
+      '';
+    };
+
     dkimKeyDirectory = mkOption {
       type = types.path;
       default = "/var/dkim";
@@ -803,8 +818,8 @@ in
     };
 
     dkimKeyBits = mkOption {
-        type = types.int;
-        default = 1024;
+        type = types.nullOr types.int;
+        default = if cfg.dkimPrivateKeyFiles == null then 1024 else null;
         description = ''
             How many bits in generated DKIM keys. RFC6376 advises minimum 1024-bit keys.
 
