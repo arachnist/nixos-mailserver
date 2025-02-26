@@ -31,9 +31,14 @@ let
   maildirLayoutAppendix = lib.optionalString cfg.useFsLayout ":LAYOUT=fs";
   maildirUTF8FolderNames = lib.optionalString cfg.useUTF8FolderNames ":UTF-8";
 
-  # maildir in format "/${domain}/${user}"
+  # maildir will be at "<cfg.mailDirectory>/<domain>/<user>" (older than stateVersion 24.11) or
+  # "<cfg.mailDirectory>/<domain>/<user>/mail" (stateVersion 24.11 or newer)
+  dovecotHomeDir = if lib.versionAtLeast config.system.stateVersion "24.11"
+    then "${cfg.mailDirectory}/%d/%n/mail"
+    else "${cfg.mailDirectory}/%d/%n";
+
   dovecotMaildir =
-    "maildir:${cfg.mailDirectory}/%d/%n${maildirLayoutAppendix}${maildirUTF8FolderNames}"
+    "maildir:${dovecotHomeDir}${maildirLayoutAppendix}${maildirUTF8FolderNames}"
     + (lib.optionalString (cfg.indexDir != null)
        ":INDEX=${cfg.indexDir}/%d/%n"
       );
@@ -317,7 +322,7 @@ in
         userdb {
           driver = passwd-file
           args = ${userdbFile}
-          default_fields = uid=${builtins.toString cfg.vmailUID} gid=${builtins.toString cfg.vmailUID} home=${cfg.mailDirectory}
+          default_fields = home=${dovecotHomeDir} uid=${toString cfg.vmailUID} gid=${toString cfg.vmailUID}
         }
 
         ${lib.optionalString cfg.ldap.enable ''
@@ -329,7 +334,7 @@ in
         userdb {
           driver = ldap
           args = ${ldapConfFile}
-          default_fields = home=/var/vmail/ldap/%u uid=${toString cfg.vmailUID} gid=${toString cfg.vmailUID}
+          default_fields = home=${dovecotHomeDir} uid=${toString cfg.vmailUID} gid=${toString cfg.vmailUID}
         }
         ''}
 
@@ -381,6 +386,30 @@ in
     };
 
     systemd.services.postfix.restartTriggers = [ genPasswdScript ] ++ (lib.optional cfg.ldap.enable [setPwdInLdapConfFile]);
+
+    systemd.services.dovecot-move-maildirs = lib.mkIf (lib.versionAtLeast config.system.stateVersion "24.11") {
+      description = "Move maildirs into the subdirectory 'mail'";
+      wantedBy = [ "dovecot2.service" ];
+      requisite = [ "dovecot2.service" ];
+      before = [ "dovecot2.service" ];
+      serviceConfig = {
+        Type = "oneshot";
+        User = "${cfg.vmailUserName}";
+        Group = "${cfg.vmailGroupName}";
+        ExecStart = pkgs.writeShellScript "move-maildirs" ''
+          set -euo pipefail
+          shopt -s dotglob extglob
+
+          for mailbox in $(find "${cfg.mailDirectory}" -mindepth 2 -maxdepth 2 -type d); do
+            if [ ! -d "$mailbox/mail" ]; then
+              umask 077
+              mkdir "$mailbox/mail"
+              mv "$mailbox"/!(mail) "$mailbox/mail/"
+            fi
+          done
+        '';
+      };
+    };
 
     systemd.services.dovecot-fts-xapian-optimize = lib.mkIf (cfg.fullTextSearch.enable && cfg.fullTextSearch.maintenance.enable) {
       description = "Optimize dovecot indices for fts_xapian";
