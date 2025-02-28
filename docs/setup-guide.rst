@@ -115,6 +115,9 @@ DNS entries for the IP’s you own:
    set a reverse DNS on your public IP because sent emails would be
    mostly marked as spam. Note that many residential ISP providers
    don't allow you to set a reverse DNS entry.
+   Another option is to use an SMTP-Relay service for outgoing E-Mail
+   to ensure it's not marked as spam, like SMPT2GO, which has a free
+   tier for sending 1000 E-Mails a month.
 
 You can check this with
 
