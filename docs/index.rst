@@ -31,6 +31,7 @@ Welcome to NixOS Mailserver's documentation!
    flakes
    autodiscovery
    ldap
+   dmarc
 
 Indices and tables
 ==================
