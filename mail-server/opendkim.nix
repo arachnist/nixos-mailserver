@@ -13,7 +13,7 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with this program. If not, see <http://www.gnu.org/licenses/>
-{ config, lib, pkgs, ... }:
+{ options, config, lib, pkgs, ... }:
 
 with lib;
 
@@ -51,11 +51,24 @@ let
 
   dkim = config.services.opendkim;
   args = [ "-f" "-l" ] ++ lib.optionals (dkim.configFile != null) [ "-x" dkim.configFile ];
+
+  # Whether the opendkim changes from https://github.com/NixOS/nixpkgs/pull/82379 are present
+  newStyle = options.services.opendkim ? settings;
 in
 {
     config = mkIf (cfg.dkimSigning && cfg.enable) {
       services.opendkim = {
         enable = true;
+      } // (if newStyle then {
+        settings = {
+          Canonicalization = "relaxed/simple";
+          UMask = "0002";
+          KeyTable = "file:${keyTable}";
+          SigningTable = "file:${signingTable}";
+          SyslogSuccess = mkIf cfg.debug true;
+          LogWhy = mkIf cfg.debug true;
+        };
+      } else {
         selector = cfg.dkimSelector;
         keyPath = cfg.dkimKeyDirectory;
         domains = "csl:${builtins.concatStringsSep "," cfg.domains}";
@@ -70,7 +83,7 @@ in
           SyslogSuccess yes
           LogWhy yes
         ''));
-      };
+      });
 
       users.users = optionalAttrs (config.services.postfix.user == "postfix") {
         postfix.extraGroups = [ "${dkimGroup}" ];
@@ -78,8 +91,9 @@ in
       systemd.services.opendkim = {
         preStart = lib.mkForce createAllCerts;
         serviceConfig = {
-          ExecStart = lib.mkForce "${pkgs.opendkim}/bin/opendkim ${escapeShellArgs args}";
           PermissionsStartOnly = lib.mkForce false;
+        } // optionalAttrs (!newStyle) {
+          ExecStart = lib.mkForce "${pkgs.opendkim}/bin/opendkim ${escapeShellArgs args}";
         };
       };
       systemd.tmpfiles.rules = [
