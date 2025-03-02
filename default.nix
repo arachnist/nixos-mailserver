@@ -469,7 +469,6 @@ in
       type = let
         loginAccount = mkOptionType {
           name = "Login Account";
-          check = (account: builtins.elem account (builtins.attrNames cfg.loginAccounts));
         };
       in with types; attrsOf (either loginAccount (nonEmptyListOf loginAccount));
       example = {
