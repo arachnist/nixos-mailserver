@@ -73,7 +73,7 @@ in
                 domain = "${cfg.dmarcReporting.domain}";
                 org_name = "${cfg.dmarcReporting.organizationName}";
                 from_name = "${cfg.dmarcReporting.fromName}";
-                msgid_from = "dmarc-rua";
+                msgid_from = "${cfg.dmarcReporting.domain}";
               }''}
           ''; };
       };
