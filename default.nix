@@ -492,6 +492,15 @@ in
       default = {};
     };
 
+    sendFromAliases = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        Specifies if members of an alias can send mail with the alias in the
+        From: header.
+      '';
+    };
+
     forwards = mkOption {
       type = with types; attrsOf (either (listOf str) str);
       example = {
