@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 {
   assertions = lib.optionals config.mailserver.ldap.enable [
     {
@@ -8,10 +8,6 @@
     {
       assertion = config.mailserver.extraVirtualAliases == {};
       message = "When the LDAP support is enable (mailserver.ldap.enable = true), it is not possible to define mailserver.extraVirtualAliases";
-    }
-    {
-      assertion = config.mailserver.forwards == {};
-      message = "When the LDAP support is enable (mailserver.ldap.enable = true), it is not possible to define mailserver.forwards";
     }
   ] ++ lib.optionals (config.mailserver.enable && config.mailserver.certificateScheme != "acme") [
     {

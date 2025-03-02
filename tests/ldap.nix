@@ -104,6 +104,10 @@ pkgs.nixosTest {
           searchScope = "sub";
         };
 
+        forwards = {
+          "bob_fw@example.com" = "bob@example.com";
+        };
+
         vmailGroupName = "vmail";
         vmailUID = 5000;
 
@@ -179,5 +183,39 @@ pkgs.nixosTest {
         "--dst-password-file <(echo '${bobPassword}')",
         "--ignore-dkim-spf"
       ]))
+
+    with subtest("Test mail forwarding works"):
+      machine.succeed(" ".join([
+        "mail-check send-and-read",
+        "--smtp-port 587",
+        "--smtp-starttls",
+        "--smtp-host localhost",
+        "--smtp-username alice@example.com",
+        "--imap-host localhost",
+        "--imap-username bob@example.com",
+        "--from-addr alice@example.com",
+        "--to-addr bob_fw@example.com",
+        "--src-password-file <(echo '${alicePassword}')",
+        "--dst-password-file <(echo '${bobPassword}')",
+        "--ignore-dkim-spf"
+      ]))
+
+    with subtest("Test cannot send mail from forwarded address"):
+      machine.fail(" ".join([
+        "mail-check send-and-read",
+        "--smtp-port 587",
+        "--smtp-starttls",
+        "--smtp-host localhost",
+        "--smtp-username bob@example.com",
+        "--imap-host localhost",
+        "--imap-username alice@example.com",
+        "--from-addr bob_fw@example.com",
+        "--to-addr alice@example.com",
+        "--src-password-file <(echo '${bobPassword}')",
+        "--dst-password-file <(echo '${alicePassword}')",
+        "--ignore-dkim-spf"
+      ]))
+      machine.succeed("journalctl -u postfix | grep -q 'Sender address rejected: not owned by user bob@example.com'")
+
   '';
 }
