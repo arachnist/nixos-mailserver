@@ -24,6 +24,27 @@ let
   rspamdSocket = "rspamd.service";
 in
 {
+  options.mailserver.rspamdWebUi = {
+    enable = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      example = true;
+      description = ''
+        Whether to enable the rspamd web ui on the configured domain.
+
+        :::warning
+        Make sure to configure authentication for it!
+        :::
+      '';
+    };
+
+    domain = lib.mkOption {
+      type = lib.types.str;
+      example = "rspamd.example.org";
+      description = "The domain under which the rspamd web ui should be reachable.";
+    };
+  };
+
   config = with cfg; lib.mkIf enable {
     environment.systemPackages = lib.mkBefore [
       (pkgs.runCommand "rspamc-wrapped" {
@@ -34,9 +55,27 @@ in
       '')
     ];
 
+    services.nginx = lib.mkIf cfg.rspamdWebUi.enable {
+      enable = true;
+      virtualHosts = {
+        "${cfg.rspamdWebUi.domain}" = {
+          forceSSL = true;
+          locations."/".proxyPass = "http://unix:/run/rspamd/worker-controller.sock:/";
+        };
+      };
+    };
+
     services.rspamd = {
       enable = true;
       inherit debug;
+
+      overrides = lib.mkIf cfg.rspamdWebUi.enable {
+        "worker-controller.inc".text = ''
+          secure_ip = "0.0.0.0/0";
+          secure_ip = "::/0";
+        '';
+      };
+
       locals = {
           "milter_headers.conf" = { text = ''
               extended_spam_headers = true;
