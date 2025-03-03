@@ -51,6 +51,14 @@ in
                 backend = "redis";
               }
           ''; };
+          "actions.conf" = {
+            text = ''
+              reject = null; # Disable rejects, default is 15
+              add_header = 6; # Add header when reaching this score
+              greylist = 4; # Apply greylisting when reaching this score (will emit `soft reject action`)
+              
+            '';
+          };
           "antivirus.conf" = lib.mkIf cfg.virusScanning { text = ''
               clamav {
                 action = "reject";
