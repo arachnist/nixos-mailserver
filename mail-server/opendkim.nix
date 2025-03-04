@@ -58,18 +58,18 @@ in
         enable = true;
         selector = cfg.dkimSelector;
         keyPath = cfg.dkimKeyDirectory;
-        domains = "csl:${builtins.concatStringsSep "," cfg.domains}";
-        configFile = pkgs.writeText "opendkim.conf" (''
-          Canonicalization ${cfg.dkimHeaderCanonicalization}/${cfg.dkimBodyCanonicalization}
-          UMask 0002
-          Socket ${dkim.socket}
-          KeyTable file:${keyTable}
-          SigningTable file:${signingTable}
-        '' + (lib.optionalString cfg.debug ''
-          Syslog yes
-          SyslogSuccess yes
-          LogWhy yes
-        ''));
+        domains = "csl:${lib.concatStringsSep "," cfg.domains}";
+        settings = {
+          Canonicalization = "${cfg.dkimHeaderCanonicalization}/${cfg.dkimBodyCanonicalization}";
+          UMask = "0002";
+          Socket = dkim.socket;
+          KeyTable = "file:${keyTable}";
+          SigningTable = "file:${signingTable}";
+        } // lib.optionalAttrs cfg.debug {
+          Syslog = "yes";
+          SyslogSuccess = "yes";
+          LogWhy = "yes";
+        };
       };
 
       users.users = optionalAttrs (config.services.postfix.user == "postfix") {
