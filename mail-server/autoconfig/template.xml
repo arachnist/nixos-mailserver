@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<clientConfig version="1.1">
+  <emailProvider id="@emailProviderId@">
+    @domains@
+    <displayName>@displayName@</displayName>
+    <displayShortName>@displayShortName</displayShortName>
+    @imapSslServer@
+    @imapServer@
+    @pop3SslServer@
+    @pop3Server@
+    <outgoingServer type="smtp">
+      <hostname>@fqdn@</hostname>
+      <port>587</port>
+      <socketType>STARTTLS</socketType>
+      <authentication>password-cleartext</authentication>
+      <username>%EMAILADDRESS%</username>
+    </outgoingServer>
+    <outgoingServer type="smtp">
+      <hostname>@fqdn@</hostname>
+      <port>25</port>
+      <socketType>STARTTLS</socketType>
+      <authentication>password-cleartext</authentication>
+      <username>%EMAILADDRESS%</username>
+    </outgoingServer>
+    @extraEmailProvider@
+  </emailProvider>
+</clientConfig>
