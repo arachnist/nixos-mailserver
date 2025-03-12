@@ -44,6 +44,13 @@ in
       description = "The domains that this mail server serves.";
     };
 
+    dkimDomains = mkOption {
+      type = types.listOf types.str;
+      example = [ "example.com" ];
+      default = [];
+      description = "The domains that this mail server serves.";
+    };
+
     certificateDomains = mkOption {
       type = types.listOf types.str;
       example = [ "imap.example.com" "pop3.example.com" ];
