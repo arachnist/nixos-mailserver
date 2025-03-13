@@ -153,12 +153,12 @@ in
       }
     ];
 
-    # for sieve-test. Shelling it in on demand usually doesnt' work, as it reads
+    # For sieve-test. Shelling it in on demand usually doesn't work, as it reads
     # the global config and tries to open shared libraries configured in there,
     # which are usually not compatible.
     environment.systemPackages = [
       pkgs.dovecot_pigeonhole
-    ];
+    ] ++ (lib.optional cfg.fullTextSearch.enable pkgs.dovecot_fts_xapian );
 
     services.dovecot2 = {
       enable = true;
@@ -172,7 +172,6 @@ in
       sslServerCert = certificatePath;
       sslServerKey = keyPath;
       enableLmtp = true;
-      modules = [ pkgs.dovecot_pigeonhole ] ++ (lib.optional cfg.fullTextSearch.enable pkgs.dovecot_fts_xapian );
       mailPlugins.globally.enable = lib.optionals cfg.fullTextSearch.enable [ "fts" "fts_xapian" ];
       protocols = lib.optional cfg.enableManageSieve "sieve";
 
