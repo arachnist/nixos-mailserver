@@ -63,7 +63,7 @@ in
         );
       in ''
         # Create mail directory and set permissions. See
-        # <http://wiki2.dovecot.org/SharedMailboxes/Permissions>.
+        # <https://doc.dovecot.org/main/core/config/shared_mailboxes.html#filesystem-permissions-1>.
         # Prevent world-readable paths, even temporarily.
         umask 007
         mkdir -p ${directories}
