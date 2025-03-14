@@ -157,6 +157,7 @@ let
     tls_ca_cert_file = ${cfg.ldap.tlsCAFile}
     tls_require_cert = yes
 
+    domain = ${lib.concatStringsSep ", " cfg.domains}
     search_base = ${cfg.ldap.searchBase}
     scope = ${cfg.ldap.searchScope}
 

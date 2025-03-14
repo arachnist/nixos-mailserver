@@ -41,7 +41,15 @@ in
       type = types.listOf types.str;
       example = [ "example.com" ];
       default = [];
-      description = "The domains that this mail server serves.";
+      description = "The domains that this mail server serves and provides a mailbox for.";
+    };
+
+    relayDomains = mkOption {
+      type = types.listOf types.str;
+      example = [ "lists.example.com" ];
+      default = [];
+      defaultText = lib.literalExpression "config.mailserver.domains";
+      description = "The domains that this mail server relays, in addition to those in {option}`domains`.";
     };
 
     certificateDomains = mkOption {
@@ -1319,4 +1327,8 @@ in
     ./mail-server/nginx.nix
     ./mail-server/kresd.nix
   ];
+
+  config = {
+     mailserver.relayDomains = cfg.domains;
+  };
 }
