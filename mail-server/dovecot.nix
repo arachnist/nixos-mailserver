@@ -158,7 +158,7 @@ in
     # which are usually not compatible.
     environment.systemPackages = [
       pkgs.dovecot_pigeonhole
-    ] ++ (lib.optional cfg.fullTextSearch.enable pkgs.dovecot_fts_xapian );
+    ] ++ lib.optional cfg.fullTextSearch.enable pkgs.dovecot_fts_xapian;
 
     # For compatibility with python imaplib
     environment.etc."dovecot/modules".source = "/run/current-system/sw/lib/dovecot/modules";
