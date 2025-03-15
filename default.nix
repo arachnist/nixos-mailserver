@@ -406,36 +406,52 @@ in
         '';
       };
 
-      minSize = mkOption {
-        type = types.ints.between 3 1000;
-        default = 3;
-        description = "Minimum size of search terms";
+      languages = mkOption {
+        type = types.nonEmptyListOf types.str;
+        default = [ "en" ];
+        example = [ "en" "de" ];
+        description = ''
+          A list of languages that the full text search should detect.
+          At least one language must be specified.
+          The language listed first is the default and is used when language recognition fails.
+          See <https://doc.dovecot.org/main/core/plugins/fts.html#fts_languages>.
+        '';
       };
-      memoryLimit = mkOption {
-        type = types.nullOr types.int;
-        default = null;
-        example = 2000;
-        description = "Memory limit for the indexer process, in MiB. If null, leaves the default (which is rather low), and if 0, no limit.";
+
+      substringSearch = mkOption {
+        type = types.bool;
+        default = false;
+        description = ''
+          If enabled, allows substring searches.
+          See <https://doc.dovecot.org/main/core/plugins/fts_flatcurve.html#fts_flatcurve_substring_search>.
+        '';
       };
 
-      maintenance = {
-        enable = mkOption {
-          type = types.bool;
-          default = true;
-          description = "Regularly optmize indices, as recommended by upstream.";
-        };
+      headerExcludes = mkOption {
+        type = types.listOf types.str;
+        default = [
+          "Received"
+          "DKIM-*"
+          "X-*"
+          "Comments"
+        ];
+        description = ''
+          The list of headers to exclude.
+          See <https://doc.dovecot.org/main/core/plugins/fts.html#fts_header_excludes>.
+        '';
+      };
 
-        onCalendar = mkOption {
-          type = types.str;
-          default = "daily";
-          description = "When to run the maintenance job. See systemd.time(7) for more information about the format.";
-        };
-
-        randomizedDelaySec = mkOption {
-          type = types.int;
-          default = 1000;
-          description = "Run the maintenance job not exactly at the time specified with `onCalendar`, but plus or minus this many seconds.";
-        };
+      filters = mkOption {
+        type = types.listOf types.str;
+        default = [
+          "normalizer-icu"
+          "snowball"
+          "stopwords"
+        ];
+        description = ''
+          The list of filters to apply.
+          <https://doc.dovecot.org/main/core/plugins/fts.html#filter-configuration>.
+        '';
       };
     };
 
@@ -1289,6 +1305,21 @@ in
   };
 
   imports = [
+    (lib.mkRemovedOptionModule [ "mailserver" "fullTextSearch" "memoryLimit" ] ''
+    This option is not needed for fts-flatcurve
+    '')
+    (lib.mkRemovedOptionModule [ "mailserver" "fullTextSearch" "maintenance" "enable" ] ''
+    This option is not needed for fts-flatcurve
+    '')
+    (lib.mkRemovedOptionModule [ "mailserver" "fullTextSearch" "maintenance" "onCalendar" ] ''
+    This option is not needed for fts-flatcurve
+    '')
+    (lib.mkRemovedOptionModule [ "mailserver" "fullTextSearch" "maintenance" "randomizedDelaySec" ] ''
+    This option is not needed for fts-flatcurve
+    '')
+    (lib.mkRemovedOptionModule [ "mailserver" "fullTextSearch" "minSize" ] ''
+    This option is not supported by fts-flatcurve
+    '')
     (lib.mkRemovedOptionModule [ "mailserver" "fullTextSearch" "maxSize" ] ''
     This option is not needed since fts-xapian 1.8.3
     '')

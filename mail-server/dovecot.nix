@@ -27,6 +27,12 @@ let
   # This file contains the ldap bind password
   ldapConfFile = "${passwdDir}/dovecot-ldap.conf.ext";
   bool2int = x: if x then "1" else "0";
+  boolToYesNo = x: if x then "yes" else "no";
+  listToLine = lib.concatStringsSep " ";
+  listToMultiAttrs = keyPrefix: attrs: lib.listToAttrs (lib.imap1 (n: x: {
+    name = "${keyPrefix}${if n==1 then "" else toString n}";
+    value = x;
+  }) attrs);
 
   maildirLayoutAppendix = lib.optionalString cfg.useFsLayout ":LAYOUT=fs";
   maildirUTF8FolderNames = lib.optionalString cfg.useUTF8FolderNames ":UTF-8";
@@ -143,6 +149,18 @@ let
     else scope
   );
 
+  ftsPluginSettings = {
+    fts = "flatcurve";
+    fts_languages = listToLine cfg.fullTextSearch.languages;
+    fts_tokenizers = listToLine [ "generic" "email-address" ];
+    fts_tokenizer_email_address = "maxlen=100"; # default 254 too large for Xapian
+    fts_flatcurve_substring_search = boolToYesNo cfg.fullTextSearch.substringSearch;
+    fts_filters = listToLine cfg.fullTextSearch.filters;
+    fts_header_excludes = listToLine cfg.fullTextSearch.headerExcludes;
+    fts_autoindex = boolToYesNo cfg.fullTextSearch.autoIndex;
+    fts_enforced = cfg.fullTextSearch.enforced;
+  } // (listToMultiAttrs "fts_autoindex_exclude" cfg.fullTextSearch.autoIndexExclude);
+
 in
 {
   config = with cfg; lib.mkIf enable {
@@ -172,15 +190,19 @@ in
       sslServerCert = certificatePath;
       sslServerKey = keyPath;
       enableLmtp = true;
-      modules = [ pkgs.dovecot_pigeonhole ] ++ (lib.optional cfg.fullTextSearch.enable pkgs.dovecot_fts_xapian );
-      mailPlugins.globally.enable = lib.optionals cfg.fullTextSearch.enable [ "fts" "fts_xapian" ];
+      modules = [ pkgs.dovecot_pigeonhole ] ++
+        (lib.optional cfg.fullTextSearch.enable pkgs.dovecot-fts-flatcurve);
+      mailPlugins.globally.enable = lib.optionals cfg.fullTextSearch.enable [
+        "fts"
+        "fts_flatcurve"
+      ];
       protocols = lib.optional cfg.enableManageSieve "sieve";
 
       pluginSettings = {
         sieve = "file:${cfg.sieveDirectory}/%u/scripts;active=${cfg.sieveDirectory}/%u/active.sieve";
         sieve_default = "file:${cfg.sieveDirectory}/%u/default.sieve";
         sieve_default_name = "default";
-      };
+      } // (lib.optionalAttrs cfg.fullTextSearch.enable ftsPluginSettings);
 
       sieve = {
         extensions = [
@@ -348,27 +370,6 @@ in
           inbox = yes
         }
 
-        ${lib.optionalString cfg.fullTextSearch.enable ''
-        plugin {
-          plugin = fts fts_xapian
-          fts = xapian
-          fts_xapian = partial=${toString cfg.fullTextSearch.minSize} verbose=${bool2int cfg.debug}
-
-          fts_autoindex = ${if cfg.fullTextSearch.autoIndex then "yes" else "no"}
-
-          ${lib.strings.concatImapStringsSep "\n" (n: x: "fts_autoindex_exclude${if n==1 then "" else toString n} = ${x}") cfg.fullTextSearch.autoIndexExclude}
-
-          fts_enforced = ${cfg.fullTextSearch.enforced}
-        }
-
-        service indexer-worker {
-        ${lib.optionalString (cfg.fullTextSearch.memoryLimit != null) ''
-          vsz_limit = ${toString (cfg.fullTextSearch.memoryLimit*1024*1024)}
-        ''}
-          process_limit = 0
-        }
-        ''}
-
         lda_mailbox_autosubscribe = yes
         lda_mailbox_autocreate = yes
       '';
@@ -381,29 +382,5 @@ in
     };
 
     systemd.services.postfix.restartTriggers = [ genPasswdScript ] ++ (lib.optional cfg.ldap.enable [setPwdInLdapConfFile]);
-
-    systemd.services.dovecot-fts-xapian-optimize = lib.mkIf (cfg.fullTextSearch.enable && cfg.fullTextSearch.maintenance.enable) {
-      description = "Optimize dovecot indices for fts_xapian";
-      requisite = [ "dovecot2.service" ];
-      after = [ "dovecot2.service" ];
-      startAt = cfg.fullTextSearch.maintenance.onCalendar;
-      serviceConfig = {
-        Type = "oneshot";
-        ExecStart = "${pkgs.dovecot}/bin/doveadm fts optimize -A";
-        PrivateDevices = true;
-        PrivateNetwork = true;
-        ProtectKernelTunables = true;
-        ProtectKernelModules = true;
-        ProtectControlGroups = true;
-        ProtectHome = true;
-        ProtectSystem = true;
-        PrivateTmp = true;
-      };
-    };
-    systemd.timers.dovecot-fts-xapian-optimize = lib.mkIf (cfg.fullTextSearch.enable && cfg.fullTextSearch.maintenance.enable && cfg.fullTextSearch.maintenance.randomizedDelaySec != 0) {
-      timerConfig = {
-        RandomizedDelaySec = cfg.fullTextSearch.maintenance.randomizedDelaySec;
-      };
-    };
   };
 }
