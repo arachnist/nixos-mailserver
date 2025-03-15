@@ -158,7 +158,7 @@ in
     # which are usually not compatible.
     environment.systemPackages = [
       pkgs.dovecot_pigeonhole
-    ];
+    ] ++ (lib.optional cfg.fullTextSearch.enable pkgs.dovecot_fts_xapian );
 
     services.dovecot2 = {
       enable = true;
@@ -172,7 +172,7 @@ in
       sslServerCert = certificatePath;
       sslServerKey = keyPath;
       enableLmtp = true;
-      modules = [ pkgs.dovecot_pigeonhole ] ++ (lib.optional cfg.fullTextSearch.enable pkgs.dovecot_fts_xapian );
+      # modules = [ pkgs.dovecot_pigeonhole ] ++ (lib.optional cfg.fullTextSearch.enable pkgs.dovecot_fts_xapian );
       mailPlugins.globally.enable = lib.optionals cfg.fullTextSearch.enable [ "fts" "fts_xapian" ];
       protocols = lib.optional cfg.enableManageSieve "sieve";
 
