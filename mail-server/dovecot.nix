@@ -125,7 +125,7 @@ let
     cat <<EOF > ${userdbFile}
     ${lib.concatStringsSep "\n" (lib.mapAttrsToList (name: value:
       "${name}:::::::"
-        + (if lib.isString value.quota
+        + (if value.quota != null
               then "userdb_quota_rule=*:storage=${value.quota}"
               else "")
     ) cfg.loginAccounts)}
