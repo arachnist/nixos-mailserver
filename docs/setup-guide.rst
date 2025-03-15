@@ -180,18 +180,19 @@ like
 
 ::
 
-   mail._domainkey IN TXT "v=DKIM1; k=rsa; s=email; p=<really-long-key>" ; ----- DKIM mail for domain.tld
+   mail._domainkey	IN	TXT	( "v=DKIM1; k=rsa; "
+      "p=<really-long-key>" )  ; ----- DKIM key mail for nixos.org
 
 where ``really-long-key`` is your public key.
 
 Based on the content of this file, we can add a ``DKIM`` record to the
 domain ``example.com``.
 
-=========================== ===== ==== ==============================
+=========================== ===== ==== ================================================
 Name (Subdomain)            TTL   Type Value
-=========================== ===== ==== ==============================
-mail._domainkey.example.com 10800 TXT  ``v=DKIM1; p=<really-long-key>``
-=========================== ===== ==== ==============================
+=========================== ===== ==== ================================================
+mail._domainkey.example.com 10800 TXT  ``v=DKIM1; k=rsa; s=email; p=<really-long-key>``
+=========================== ===== ==== ================================================
 
 You can check this with
 
