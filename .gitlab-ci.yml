@@ -11,3 +11,19 @@ hydra-master:
   image: nixos/nix
   script:
     - nix-shell -I nixpkgs=channel:nixos-22.05 -p hydra-cli --run 'hydra-cli -H https://hydra.nix-community.org jobset-wait simple-nixos-mailserver master'
+
+deploy-pages:
+  rules:
+    - if: $CI_COMMIT_BRANCH == 'master'
+    - if: $CI_COMMIT_BRANCH =~ /nixos-/
+    - if: $CI_COMMIT_BRANCH == 'gitlab-pages'
+  image: nixos/nix
+  script:
+    - nix --extra-experimental-features nix-command --extra-experimental-features flakes build .#documentation --out-link public
+    - cp -r public/ "$CI_COMMIT_BRANCH"
+  pages: true
+  artifacts:
+    name: "$CI_COMMIT_BRANCH"
+    paths:
+      - "$CI_COMMIT_BRANCH"
+    expire_in: 2 year
