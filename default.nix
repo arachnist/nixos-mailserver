@@ -894,6 +894,14 @@ in
           The sender name for DMARC reports. Defaults to the organization name.
         '';
       };
+
+      excludeDomains = mkOption {
+        type = types.listOf types.str;
+        default = [];
+        description = ''
+          List of domains or eSLDs to be excluded from DMARC reports.
+        '';
+      };
     };
 
     debug = mkOption {
